@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ani-Chat – OpenRouter Playground</title>
+<title>ChatWithIt – OpenRouter Playground</title>
 <!-- Marked.js for Markdown rendering -->
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
@@ -118,7 +118,6 @@
   }
   .bubble.user      { background: var(--accent); color: #fff; border-bottom-right-radius: 4px; white-space: pre-wrap; }
   .bubble.assistant { background: var(--surface2); color: var(--fg); border-bottom-left-radius: 4px; }
-  /* Markdown inside assistant bubble */
   .bubble.assistant p  { margin-bottom: 0.5rem; }
   .bubble.assistant p:last-child { margin-bottom: 0; }
   .bubble.assistant h1,.bubble.assistant h2,.bubble.assistant h3 { margin: 0.6rem 0 0.3rem; font-size: 1rem; color: var(--fg); }
@@ -175,9 +174,7 @@
   }
 
   /* ── Mobile ── */
-  @media(max-width:640px){
-    #sidebar { display: none; }
-  }
+  @media(max-width:640px){ #sidebar { display: none; } }
 
   /* ── Welcome ── */
   #welcome {
@@ -193,10 +190,10 @@
 </head>
 <body>
 
-<!-- ════ HEADER ════ -->
+<!-- HEADER -->
 <header id="header">
   <div class="logo">
-    <span>✨ Ani-Chat</span>
+    <span>💬 ChatWithIt</span>
     <div class="model-badge" id="activeBadge">No model selected</div>
   </div>
   <div id="header-actions">
@@ -208,10 +205,8 @@
 
 <div id="main">
 
-  <!-- ════ SIDEBAR ════ -->
+  <!-- SIDEBAR -->
   <aside id="sidebar">
-
-    <!-- Auth -->
     <div class="input-group">
       <div class="section-label">🔑 Authentication</div>
       <input type="password" id="apiKey" placeholder="sk-or-v1-…" autocomplete="off">
@@ -219,17 +214,14 @@
       <div id="status">Enter your OpenRouter key</div>
     </div>
 
-    <!-- Model -->
     <div class="input-group">
       <div class="section-label">🤖 Model</div>
       <select id="modelSelect"><option value="none">Loading models…</option></select>
       <button class="btn btn-outline btn-sm btn-full" id="refreshModels">🔄 Refresh Free Models</button>
     </div>
 
-    <!-- Monitor -->
     <div id="monitor">📊 No messages yet</div>
 
-    <!-- Prompt Library -->
     <div class="input-group">
       <div class="section-label">📚 Prompt Library</div>
       <div id="prompt-list">
@@ -244,37 +236,31 @@
       </div>
     </div>
 
-    <!-- Sidebar file upload (UNIQUE id: sidebarFileInput) -->
     <div class="input-group" style="margin-top:auto;">
       <div class="section-label">📎 Attachments</div>
       <label class="file-label-sidebar" for="sidebarFileInput">📎 Upload PDF / DOCX / TXT</label>
       <input type="file" id="sidebarFileInput" accept=".pdf,.docx,.txt" multiple style="display:none;">
       <div id="sidebarFileCount" style="font-size:0.78rem;color:var(--fg-muted);">No files selected</div>
     </div>
-
   </aside>
 
-  <!-- ════ CHAT COLUMN ════ -->
+  <!-- CHAT COLUMN -->
   <div id="chat-col">
-
-    <!-- Welcome (shown until first message) -->
     <div id="welcome">
-      <div style="font-size:3rem">✨</div>
-      <h2>Welcome to Ani-Chat</h2>
+      <div style="font-size:3rem">💬</div>
+      <h2>Welcome to ChatWithIt</h2>
       <p>An OpenRouter-powered AI playground with free model discovery, file upload, and Markdown export.</p>
       <div class="welcome-steps">
         <div class="step"><div class="step-num">1</div><div>Paste your <strong>OpenRouter API key</strong> in the sidebar and click <em>Authenticate</em></div></div>
         <div class="step"><div class="step-num">2</div><div>Pick any <strong>free model</strong> from the dropdown (auto-discovered)</div></div>
-        <div class="step"><div class="step-num">3</div><div>Type a message or click a <strong>prompt chip</strong> to start</div></div>
+        <div class="step"><div class="step-num">3</div><div>Type a message or click a <strong>prompt chip</strong> to start chatting</div></div>
       </div>
     </div>
 
     <div id="chat" style="display:none;"></div>
 
-    <!-- Input area -->
     <div id="input-area">
       <div id="action-row">
-        <!-- UNIQUE id: mainFileInput -->
         <label class="attach-btn" for="mainFileInput">📎 Attach</label>
         <input type="file" id="mainFileInput" accept=".pdf,.docx,.txt" multiple style="display:none;">
         <span id="fileCount2"></span>
@@ -290,9 +276,6 @@
 </div>
 
 <script>
-/* ══════════════════════════════════════════════════
-   UTILS
-══════════════════════════════════════════════════ */
 const $ = id => document.getElementById(id);
 const REFERER = (location.protocol === 'file:') ? 'http://localhost' : location.href;
 
@@ -303,17 +286,11 @@ function setStatus(msg, type = 'neutral') {
   el.textContent = msg;
 }
 
-/* ══════════════════════════════════════════════════
-   STATE
-══════════════════════════════════════════════════ */
 let apiKey = '';
 let chatHistory = [];
-let attachedFiles = []; // shared between both file inputs
+let attachedFiles = [];
 let isTyping = false;
 
-/* ══════════════════════════════════════════════════
-   MODELS
-══════════════════════════════════════════════════ */
 const BLACKLIST = new Set(['gryphe/mythomax-l2-13b:nitro', 'haotian-liu/llava-13b']);
 let allModels = [];
 
@@ -321,7 +298,7 @@ async function fetchModels() {
   $('modelSelect').innerHTML = '<option value="none">Fetching free models…</option>';
   try {
     const r = await fetch('https://openrouter.ai/api/v1/models', {
-      headers: { 'HTTP-Referer': REFERER, 'X-Title': 'Ani-Chat' }
+      headers: { 'HTTP-Referer': REFERER, 'X-Title': 'ChatWithIt' }
     });
     const data = await r.json();
     allModels = (data.data || []).filter(m => {
@@ -341,8 +318,7 @@ function renderModels() {
   sel.innerHTML = '';
   if (!allModels.length) {
     sel.innerHTML = '<option value="none">No free models found</option>';
-    updateActiveBadge();
-    return;
+    updateActiveBadge(); return;
   }
   allModels.forEach(m => {
     const o = document.createElement('option');
@@ -364,16 +340,13 @@ function removeModelFromList(modelId) {
   renderModels();
 }
 
-/* ══════════════════════════════════════════════════
-   AUTH
-══════════════════════════════════════════════════ */
 async function authKey() {
   const key = $('apiKey').value.trim();
   if (!key) { setStatus('⚠️ Enter an API key', 'error'); return; }
   setStatus('⏳ Verifying…', 'info');
   try {
     const r = await fetch('https://openrouter.ai/api/v1/auth/key', {
-      headers: { 'Authorization': `Bearer ${key}`, 'HTTP-Referer': REFERER, 'X-Title': 'Ani-Chat' }
+      headers: { 'Authorization': `Bearer ${key}`, 'HTTP-Referer': REFERER, 'X-Title': 'ChatWithIt' }
     });
     if (r.ok) {
       apiKey = key;
@@ -388,9 +361,6 @@ async function authKey() {
   } catch (e) { setStatus(`❌ Connection error: ${e}`, 'error'); }
 }
 
-/* ══════════════════════════════════════════════════
-   FILE HANDLING
-══════════════════════════════════════════════════ */
 function syncFileInputs(files) {
   attachedFiles = Array.from(files);
   const count = attachedFiles.length;
@@ -406,28 +376,17 @@ async function readFileText(file) {
       fr.onerror = () => res(`[Could not read ${file.name}]`);
       fr.readAsText(file);
     } else {
-      // PDF/DOCX require server-side parsing; surface filename + size so the AI is informed
       res(`[Attached file: ${file.name} (${(file.size / 1024).toFixed(1)} KB) — paste extracted text here for PDF/DOCX]`);
     }
   });
 }
 
-/* ══════════════════════════════════════════════════
-   MARKDOWN RENDER
-══════════════════════════════════════════════════ */
 function renderMarkdown(text) {
-  if (typeof marked === 'undefined') return text.replace(/</g,'&lt;');
-  // marked v9+ uses marked.parse()
-  try {
-    return marked.parse(text, { breaks: true, gfm: true });
-  } catch {
-    return text.replace(/</g, '&lt;');
-  }
+  if (typeof marked === 'undefined') return text.replace(/</g, '&lt;');
+  try { return marked.parse(text, { breaks: true, gfm: true }); }
+  catch { return text.replace(/</g, '&lt;'); }
 }
 
-/* ══════════════════════════════════════════════════
-   CHAT UI
-══════════════════════════════════════════════════ */
 function showChatArea() {
   $('welcome').style.display = 'none';
   $('chat').style.display = 'flex';
@@ -436,36 +395,26 @@ function showChatArea() {
 function addBubble(role, content, meta = '') {
   const wrap = document.createElement('div');
   wrap.className = `msg-wrap ${role}`;
-
   const av = document.createElement('div');
   av.className = `avatar ${role}`;
-  av.textContent = role === 'user' ? '👤' : '🤖';
-
+  av.textContent = role === 'user' ? '👤' : '💬';
   const col = document.createElement('div');
-  col.style.display = 'flex';
-  col.style.flexDirection = 'column';
-  col.style.maxWidth = '100%';
-
+  col.style.cssText = 'display:flex;flex-direction:column;max-width:100%;';
   const bubble = document.createElement('div');
   bubble.className = `bubble ${role}`;
   if (role === 'assistant') {
     bubble.innerHTML = renderMarkdown(content);
-    // open links in new tab
     bubble.querySelectorAll('a').forEach(a => a.setAttribute('target', '_blank'));
   } else {
     bubble.textContent = content;
   }
-
   const metaEl = document.createElement('div');
   metaEl.className = `msg-meta ${role === 'user' ? 'right' : ''}`;
   metaEl.textContent = meta;
-
   col.appendChild(bubble);
   col.appendChild(metaEl);
-
   if (role === 'user') { wrap.appendChild(col); wrap.appendChild(av); }
   else                 { wrap.appendChild(av); wrap.appendChild(col); }
-
   $('chat').appendChild(wrap);
   $('chat').scrollTop = $('chat').scrollHeight;
   return bubble;
@@ -475,7 +424,7 @@ function addTypingIndicator() {
   const wrap = document.createElement('div');
   wrap.className = 'msg-wrap assistant';
   wrap.id = 'typing-indicator';
-  wrap.innerHTML = `<div class="avatar assistant">🤖</div><div class="bubble assistant"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  wrap.innerHTML = `<div class="avatar assistant">💬</div><div class="bubble assistant"><div class="typing"><span></span><span></span><span></span></div></div>`;
   $('chat').appendChild(wrap);
   $('chat').scrollTop = $('chat').scrollHeight;
 }
@@ -494,19 +443,14 @@ function updateMonitor() {
     `🔢 <b>Tokens used:</b> ${tokens.toLocaleString()}`;
 }
 
-/* ══════════════════════════════════════════════════
-   SEND
-══════════════════════════════════════════════════ */
 async function sendMessage() {
   if (isTyping) return;
   const text  = $('userInput').value.trim();
   const model = $('modelSelect').value;
-
-  if (!apiKey)         { setStatus('⚠️ Please authenticate first', 'error'); return; }
-  if (model === 'none'){ setStatus('⚠️ No model selected', 'error'); return; }
+  if (!apiKey)          { setStatus('⚠️ Please authenticate first', 'error'); return; }
+  if (model === 'none') { setStatus('⚠️ No model selected', 'error'); return; }
   if (!text && !attachedFiles.length) return;
 
-  // Build file context
   let fileContext = '';
   for (const f of attachedFiles) {
     const txt = await readFileText(f);
@@ -534,22 +478,20 @@ async function sendMessage() {
     const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization' : `Bearer ${apiKey}`,
-        'Content-Type'  : 'application/json',
-        'HTTP-Referer'  : REFERER,
-        'X-Title'       : 'Ani-Chat'
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type' : 'application/json',
+        'HTTP-Referer' : REFERER,
+        'X-Title'      : 'ChatWithIt'
       },
       body: JSON.stringify({
         model,
         messages: [
-          { role: 'system', content: 'You are Ani, a helpful AI assistant. Be concise, accurate, and developer-friendly. Use Markdown formatting in your responses.' },
+          { role: 'system', content: 'You are ChatWithIt, a helpful AI assistant. Be concise, accurate, and developer-friendly. Use Markdown formatting in your responses.' },
           ...chatHistory.map(m => ({ role: m.role, content: m.content }))
         ]
       })
     });
-
     removeTypingIndicator();
-
     if (resp.ok) {
       const data   = await resp.json();
       const reply  = data.choices?.[0]?.message?.content || '(empty response)';
@@ -562,7 +504,7 @@ async function sendMessage() {
       const errMsg  = errData.error?.message || `HTTP ${resp.status}`;
       addBubble('assistant', `⚠️ **Gateway Error:** ${errMsg}`, '');
       removeModelFromList(model);
-      addBubble('assistant', `ℹ️ Model \`${model}\` was removed after an error. Select another model.`, '');
+      addBubble('assistant', `ℹ️ Model \`${model}\` was removed after an error. Please select another model.`, '');
     }
   } catch (e) {
     removeTypingIndicator();
@@ -574,34 +516,25 @@ async function sendMessage() {
   $('sendBtn').textContent = 'Send ↑';
 }
 
-/* ══════════════════════════════════════════════════
-   EXPORT
-══════════════════════════════════════════════════ */
 function exportMD() {
   if (!chatHistory.length) { alert('No chat to export yet!'); return; }
-  let md = '# Ani-Chat Export\n\n';
+  let md = '# ChatWithIt Export\n\n';
   chatHistory.forEach(m => {
     const clean = m.content.split('[FILE CONTENT')[0].trim();
-    md += `### ${m.role === 'user' ? '👤 You' : '🤖 Ani'}\n${clean}\n\n---\n\n`;
+    md += `### ${m.role === 'user' ? '👤 You' : '💬 ChatWithIt'}\n${clean}\n\n---\n\n`;
   });
   const blob = new Blob([md], { type: 'text/markdown' });
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
-  a.href = url; a.download = `ani-chat-${Date.now()}.md`; a.click();
+  a.href = url; a.download = `chatwithit-${Date.now()}.md`; a.click();
   URL.revokeObjectURL(url);
 }
 
-/* ══════════════════════════════════════════════════
-   AUTO-RESIZE TEXTAREA
-══════════════════════════════════════════════════ */
 function autoResize(el) {
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight, 160) + 'px';
 }
 
-/* ══════════════════════════════════════════════════
-   WIRE-UP
-══════════════════════════════════════════════════ */
 $('authBtn').onclick       = authKey;
 $('refreshModels').onclick = fetchModels;
 $('sendBtn').onclick       = sendMessage;
@@ -624,14 +557,10 @@ $('userInput').addEventListener('keydown', e => {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
 });
 $('userInput').addEventListener('input', () => autoResize($('userInput')));
-
-// Both file inputs share the same attachedFiles array
 $('mainFileInput').addEventListener('change',    e => syncFileInputs(e.target.files));
 $('sidebarFileInput').addEventListener('change', e => syncFileInputs(e.target.files));
-
 $('modelSelect').addEventListener('change', updateActiveBadge);
 
-// Prompt chips
 document.querySelectorAll('.prompt-chip').forEach(chip => {
   chip.addEventListener('click', () => {
     $('userInput').value = chip.dataset.prompt + ' ';
@@ -640,15 +569,11 @@ document.querySelectorAll('.prompt-chip').forEach(chip => {
   });
 });
 
-// Keyboard shortcuts
 document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'l') { e.preventDefault(); $('clearBtn').click(); }
   if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); exportMD(); }
 });
 
-/* ══════════════════════════════════════════════════
-   INIT
-══════════════════════════════════════════════════ */
 fetchModels();
 </script>
 </body>
