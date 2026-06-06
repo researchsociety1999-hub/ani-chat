@@ -1,0 +1,6 @@
+{
+  "name": "ani-chat",
+  "private": true,
+  "version": "1.0.0",
+  "description": "OpenRouter AI Chat Platform with free model discovery, file upload, token monitoring, and Markdown export"
+}
