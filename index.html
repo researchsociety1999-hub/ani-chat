@@ -58,7 +58,7 @@ body{
 }
 body::before{
   content:'';position:fixed;inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' seed='1'/%3E%3C/filter%3E%3Crect width='256' height='256' fill='%230a0a0f' filter='url(%23noise)' opacity='0.1'/%3E%3C/svg%3E");
   pointer-events:none;z-index:999;opacity:.6;
 }
 button,input,select,textarea{font:inherit}
@@ -117,7 +117,7 @@ button{touch-action:manipulation}
   flex:1;overflow-y:auto;padding:.95rem;display:flex;flex-direction:column;gap:.9rem;min-height:0;
 }
 #sidebar-inner::-webkit-scrollbar,#chat::-webkit-scrollbar,.compare-col-chat::-webkit-scrollbar,#rp-inner::-webkit-scrollbar,#prompt-list::-webkit-scrollbar{width:4px}
-#sidebar-inner::-webkit-scrollbar-thumb,#chat::-webkit-scrollbar-thumb,.compare-col-chat::-webkit-scrollbar-thumb,#rp-inner::-webkit-scrollbar-thumb,#prompt-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px}
+#sidebar-inner::-webkit-scrollbar-thumb,#chat::-webkit-scrollbar-thumb,.compare-col-chat::-webkit-scrollbar-thumb,#rp-inner::-webkit-scrollbar-thumb,#prompt-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 
 .s-section{display:flex;flex-direction:column;gap:.45rem;min-width:0}
 .s-label{
@@ -418,6 +418,11 @@ kbd{
 .search-highlight{background:rgba(251,191,36,.35);border-radius:2px}
 .search-highlight.current{background:rgba(251,191,36,.7)}
 
+.security-warning{
+  background:rgba(251,113,133,0.1);border:1px solid var(--rose);border-radius:var(--radius-sm);
+  padding:.5rem .7rem;font-size:.7rem;color:var(--rose);margin-bottom:.5rem;display:none
+}
+
 @media (max-width: 980px){
   #model-breadcrumb{justify-content:flex-start}
   #header-actions .hide-md{display:none}
@@ -490,99 +495,101 @@ kbd{
   </div>
 
   <div id="header-actions">
-    <button class="hbtn" id="sidebarToggle" title="Toggle Sidebar (Ctrl+B)">☰</button>
-    <button class="hbtn hide-sm" id="searchBtn" title="Search (Ctrl+F)">🔍</button>
-    <button class="hbtn hide-sm" id="compareBtn" title="Compare Models">⚖️</button>
-    <button class="hbtn hide-sm" id="statsBtn" title="Stats Panel (Ctrl+I)">📊</button>
-    <button class="hbtn hide-md" id="exportBtn" title="Export (Ctrl+S)">↓</button>
+    <button class="hbtn" id="sidebarToggle" title="Toggle Sidebar (Ctrl+B)" aria-label="Toggle sidebar">☰</button>
+    <button class="hbtn hide-sm" id="searchBtn" title="Search (Ctrl+F)" aria-label="Search messages">🔍</button>
+    <button class="hbtn hide-sm" id="compareBtn" title="Compare Models" aria-label="Compare models">⚖️</button>
+    <button class="hbtn hide-sm" id="statsBtn" title="Stats Panel (Ctrl+I)" aria-label="Show statistics">📊</button>
+    <button class="hbtn hide-md" id="exportBtn" title="Export (Ctrl+S)" aria-label="Export conversation">↓</button>
 
     <div style="position:relative;">
-      <button class="hbtn" id="themeBtn" title="Change Theme">🎨</button>
-      <div id="theme-menu">
-        <div class="theme-opt" data-theme="theme-midnight">🌙 Midnight</div>
-        <div class="theme-opt" data-theme="theme-nordic">❄️ Nordic</div>
-        <div class="theme-opt" data-theme="theme-emerald">🌿 Emerald</div>
-        <div class="theme-opt" data-theme="theme-crimson">🌹 Crimson</div>
-        <div class="theme-opt" data-theme="theme-paper">📜 Paper</div>
-        <div class="theme-opt" data-theme="theme-light">☀️ Light</div>
+      <button class="hbtn" id="themeBtn" title="Change Theme" aria-label="Change theme" aria-expanded="false" aria-haspopup="menu">🎨</button>
+      <div id="theme-menu" role="menu">
+        <div class="theme-opt" data-theme="theme-midnight" role="menuitem">🌙 Midnight</div>
+        <div class="theme-opt" data-theme="theme-nordic" role="menuitem">❄️ Nordic</div>
+        <div class="theme-opt" data-theme="theme-emerald" role="menuitem">🌿 Emerald</div>
+        <div class="theme-opt" data-theme="theme-crimson" role="menuitem">🌹 Crimson</div>
+        <div class="theme-opt" data-theme="theme-paper" role="menuitem">📜 Paper</div>
+        <div class="theme-opt" data-theme="theme-light" role="menuitem">☀️ Light</div>
       </div>
     </div>
 
-    <button class="hbtn hide-md" id="shortcutsBtn" title="Keyboard Shortcuts (?)">⌨️</button>
-    <button class="hbtn" id="clearBtn" title="Clear (Ctrl+L)" style="color:var(--rose);border-color:var(--rose);background:rgba(251,113,133,0.07);">✕</button>
+    <button class="hbtn hide-md" id="shortcutsBtn" title="Keyboard Shortcuts (?)" aria-label="Show keyboard shortcuts">⌨️</button>
+    <button class="hbtn" id="clearBtn" title="Clear (Ctrl+L)" aria-label="Clear conversation" style="color:var(--rose);border-color:var(--rose);background:rgba(251,113,133,0.07);">✕</button>
   </div>
 </header>
 
 <div id="main">
-  <aside id="sidebar">
+  <aside id="sidebar" role="complementary" aria-label="Settings sidebar">
     <div id="sidebar-inner">
       <div class="s-section">
         <div class="s-label">Provider</div>
-        <select id="providerSelect">
+        <select id="providerSelect" aria-label="Select AI provider">
           <option value="openrouter">🔷 OpenRouter</option>
           <option value="huggingface">🤗 Hugging Face</option>
         </select>
       </div>
 
+      <div class="security-warning" id="securityWarning">⚠️ Store tokens securely. Never share them.</div>
+
       <div class="s-section" id="or-auth-section">
         <div class="s-label">OpenRouter Auth</div>
-        <input type="password" id="apiKey" placeholder="sk-or-v1-…" autocomplete="off">
+        <input type="password" id="apiKey" placeholder="sk-or-v1-…" autocomplete="off" aria-label="OpenRouter API key">
         <button class="btn btn-accent btn-full" id="authBtn">🔑 Authenticate</button>
         <button class="btn btn-ghost btn-sm btn-full" id="clearOrKey">🗑️ Forget Key</button>
-        <div id="status">Enter your OpenRouter key</div>
+        <div id="status" role="status" aria-live="polite">Enter your OpenRouter key</div>
       </div>
 
       <div class="s-section" id="hf-auth-section" style="display:none;">
         <div class="s-label">Hugging Face Auth</div>
-        <input type="password" id="hfToken" placeholder="hf_xxxxxxxxxxxx" autocomplete="off">
+        <input type="password" id="hfToken" placeholder="hf_xxxxxxxxxxxx" autocomplete="off" aria-label="Hugging Face token">
         <button class="btn btn-teal btn-full" id="hfAuthBtn">🤗 Connect HF</button>
         <button class="btn btn-ghost btn-sm btn-full" id="clearHfKey">🗑️ Forget Token</button>
-        <div id="hfStatus">Enter your HF token</div>
+        <div id="hfStatus" role="status" aria-live="polite">Enter your HF token</div>
       </div>
 
       <div class="s-section">
         <div class="s-label">Model</div>
-        <select id="modelSelect"><option value="none">— authenticate first —</option></select>
+        <select id="modelSelect" aria-label="Select model"><option value="none">— authenticate first —</option></select>
         <button class="btn btn-ghost btn-sm btn-full" id="refreshModels">↻ Refresh Free Models</button>
       </div>
 
       <div class="s-section" id="cmp-model-section" style="display:none;">
         <div class="s-label">Compare: Model B</div>
-        <select id="modelSelectB"><option value="none">— select model B —</option></select>
+        <select id="modelSelectB" aria-label="Select second model for comparison"><option value="none">— select model B —</option></select>
       </div>
 
       <div class="s-section">
         <div class="s-label">AI Persona</div>
-        <div class="persona-grid" id="persona-grid">
-          <div class="persona-card active" data-prompt="You are a helpful AI assistant. Be concise, accurate, and developer-friendly. Use Markdown." data-id="default"><div class="p-icon">🤖</div><div class="p-name">Default</div></div>
-          <div class="persona-card" data-prompt="You are a senior software engineer who reviews code critically, points out bugs, and suggests best practices. Be technical and direct." data-id="engineer"><div class="p-icon">👨‍💻</div><div class="p-name">Engineer</div></div>
-          <div class="persona-card" data-prompt="You are a creative writing coach. Help with storytelling, character development, and prose. Be imaginative and encouraging." data-id="writer"><div class="p-icon">✍️</div><div class="p-name">Writer</div></div>
-          <div class="persona-card" data-prompt="You are a Socratic teacher. Never give direct answers—ask guiding questions that help the user discover the answer themselves." data-id="teacher"><div class="p-icon">🎓</div><div class="p-name">Teacher</div></div>
-          <div class="persona-card" data-prompt="You are a debate champion. Argue any position given to you with logic and evidence, even if you personally disagree." data-id="debate"><div class="p-icon">⚖️</div><div class="p-name">Debater</div></div>
-          <div class="persona-card" data-prompt="You respond only with structured JSON. No prose. Parse requests and return clean JSON data." data-id="json"><div class="p-icon">{ }</div><div class="p-name">JSON Mode</div></div>
+        <div class="persona-grid" id="persona-grid" role="group" aria-label="AI personas">
+          <div class="persona-card active" data-prompt="You are a helpful AI assistant. Be concise, accurate, and developer-friendly. Use Markdown." data-id="default" role="button" tabindex="0" aria-pressed="true"><div class="p-icon">🤖</div><div class="p-name">Default</div></div>
+          <div class="persona-card" data-prompt="You are a senior software engineer who reviews code critically, points out bugs, and suggests best practices. Be technical and direct." data-id="engineer" role="button" tabindex="0" aria-pressed="false"><div class="p-icon">👨‍💻</div><div class="p-name">Engineer</div></div>
+          <div class="persona-card" data-prompt="You are a creative writing coach. Help with storytelling, character development, and prose. Be imaginative and encouraging." data-id="writer" role="button" tabindex="0" aria-pressed="false"><div class="p-icon">✍️</div><div class="p-name">Writer</div></div>
+          <div class="persona-card" data-prompt="You are a Socratic teacher. Never give direct answers—ask guiding questions that help the user discover the answer themselves." data-id="teacher" role="button" tabindex="0" aria-pressed="false"><div class="p-icon">🧑‍🏫</div><div class="p-name">Teacher</div></div>
+          <div class="persona-card" data-prompt="You are a debate champion. Argue any position given to you with logic and evidence, even if you personally disagree." data-id="debate" role="button" tabindex="0" aria-pressed="false"><div class="p-icon">🎤</div><div class="p-name">Debate</div></div>
+          <div class="persona-card" data-prompt="You respond only with structured JSON. No prose. Parse requests and return clean JSON data." data-id="json" role="button" tabindex="0" aria-pressed="false"><div class="p-icon">{ }</div><div class="p-name">JSON</div></div>
         </div>
       </div>
 
       <div class="s-section">
         <div class="s-label">System Prompt</div>
-        <textarea id="systemPromptInput">You are a helpful AI assistant. Be concise, accurate, and developer-friendly. Use Markdown formatting in your responses.</textarea>
+        <textarea id="systemPromptInput" aria-label="System prompt">You are a helpful AI assistant. Be concise, accurate, and developer-friendly. Use Markdown formatting in your responses.</textarea>
       </div>
 
       <div class="s-section">
         <div class="s-label">Generation Settings</div>
         <div class="s-label" style="font-size:.7rem;color:var(--fg-muted);margin-bottom:0;text-transform:none;letter-spacing:0;">Temperature</div>
         <div class="slider-row">
-          <input type="range" id="tempSlider" min="0" max="2" step="0.05" value="0.7">
-          <span class="slider-val" id="tempVal">0.7</span>
+          <input type="range" id="tempSlider" min="0" max="2" step="0.05" value="0.7" aria-label="Temperature">
+          <span class="slider-val" id="tempVal" aria-live="polite">0.7</span>
         </div>
         <div class="s-label" style="font-size:.7rem;color:var(--fg-muted);margin-bottom:0;text-transform:none;letter-spacing:0;">Max Tokens</div>
         <div class="slider-row">
-          <input type="range" id="maxTokensSlider" min="256" max="4096" step="128" value="1024">
-          <span class="slider-val" id="maxTokensVal">1024</span>
+          <input type="range" id="maxTokensSlider" min="256" max="4096" step="128" value="1024" aria-label="Max tokens">
+          <span class="slider-val" id="maxTokensVal" aria-live="polite">1024</span>
         </div>
       </div>
 
-      <div id="monitor">📊 No messages yet</div>
+      <div id="monitor" role="status" aria-live="polite">📊 No messages yet</div>
 
       <div class="s-section">
         <div class="s-label">Prompt Library</div>
@@ -608,8 +615,8 @@ kbd{
 
       <div class="s-section" style="margin-top:auto;">
         <div class="s-label">Attachments</div>
-        <label class="file-drop-zone" for="sidebarFileInput" id="dropZone">📎 Drop or click to attach files</label>
-        <input type="file" id="sidebarFileInput" accept=".txt,.md,.json,.csv,.js,.ts,.py,.html,.css" multiple style="display:none;">
+        <label class="file-drop-zone" for="sidebarFileInput" id="dropZone" role="button" tabindex="0">📎 Drop or click to attach files</label>
+        <input type="file" id="sidebarFileInput" accept=".txt,.md,.json,.csv,.js,.ts,.py,.html,.css" multiple style="display:none;" aria-label="Attach files">
         <div id="sidebarFileCount" style="font-size:.75rem;color:var(--fg-muted);">No files selected</div>
       </div>
     </div>
@@ -617,24 +624,24 @@ kbd{
 
   <div id="chat-col">
     <div id="search-overlay">
-      <input type="text" id="search-input-box" placeholder="Search messages…" autocomplete="off">
-      <span id="search-results-count"></span>
+      <input type="text" id="search-input-box" placeholder="Search messages…" autocomplete="off" aria-label="Search messages">
+      <span id="search-results-count" aria-live="polite"></span>
       <div class="search-nav">
-        <button id="search-prev" title="Previous">↑</button>
-        <button id="search-next" title="Next">↓</button>
+        <button id="search-prev" title="Previous" aria-label="Previous search result">↑</button>
+        <button id="search-next" title="Next" aria-label="Next search result">↓</button>
       </div>
-      <button class="btn btn-ghost btn-sm" id="search-close">✕</button>
+      <button class="btn btn-ghost btn-sm" id="search-close" aria-label="Close search">✕</button>
     </div>
 
     <div id="compare-container">
       <div id="compare-cols">
         <div class="compare-col">
           <div class="compare-col-header"><span class="crumb-dot" style="background:var(--accent)"></span><span id="cmp-label-a">Model A</span></div>
-          <div class="compare-col-chat" id="cmp-chat-a"></div>
+          <div class="compare-col-chat" id="cmp-chat-a" role="log" aria-live="polite" aria-label="Model A responses"></div>
         </div>
         <div class="compare-col">
           <div class="compare-col-header"><span class="crumb-dot" style="background:var(--teal)"></span><span id="cmp-label-b">Model B</span></div>
-          <div class="compare-col-chat" id="cmp-chat-b"></div>
+          <div class="compare-col-chat" id="cmp-chat-b" role="log" aria-live="polite" aria-label="Model B responses"></div>
         </div>
       </div>
     </div>
@@ -651,48 +658,48 @@ kbd{
       </div>
     </div>
 
-    <div id="chat" style="display:none;"></div>
+    <div id="chat" role="log" aria-live="polite" aria-label="Chat messages" style="display:none;"></div>
 
     <div id="input-area">
-      <div id="mention-popup"></div>
+      <div id="mention-popup" role="menu" aria-hidden="true"></div>
       <div id="action-row">
-        <label class="attach-btn" for="mainFileInput">📎 Attach</label>
-        <input type="file" id="mainFileInput" accept=".txt,.md,.json,.csv,.js,.ts,.py,.html,.css" multiple style="display:none;">
-        <span id="fileCount2"></span>
-        <button class="attach-btn" id="voiceBtn" title="Voice Input">🎤 Voice</button>
-        <button class="attach-btn" id="fmtToggle" title="Toggle formatting mode">Aa Plain</button>
+        <label class="attach-btn" for="mainFileInput" aria-label="Attach files">📎 Attach</label>
+        <input type="file" id="mainFileInput" accept=".txt,.md,.json,.csv,.js,.ts,.py,.html,.css" multiple style="display:none;" aria-label="Main file input">
+        <span id="fileCount2" aria-live="polite"></span>
+        <button class="attach-btn" id="voiceBtn" title="Voice Input" aria-label="Voice input">🎤 Voice</button>
+        <button class="attach-btn" id="fmtToggle" title="Toggle formatting mode" aria-label="Toggle formatting">Aa Plain</button>
         <div class="spacer"></div>
-        <span id="char-count">0</span>
+        <span id="char-count" aria-live="polite">0</span>
         <span id="hint">Enter ↵ send · Shift+Enter newline</span>
       </div>
       <div id="input-row">
-        <textarea id="userInput" placeholder="Ask anything… (type @ for commands)" rows="1"></textarea>
-        <button id="sendBtn">Send ↑</button>
+        <textarea id="userInput" placeholder="Ask anything… (type @ for commands)" rows="1" aria-label="Message input"></textarea>
+        <button id="sendBtn" aria-label="Send message">Send ↑</button>
       </div>
     </div>
   </div>
 
-  <div id="right-panel">
+  <div id="right-panel" role="complementary" aria-label="Statistics panel">
     <div id="rp-inner">
       <div id="rp-title">
         <span>📊 Session Stats</span>
-        <button id="rp-close">✕</button>
+        <button id="rp-close" aria-label="Close statistics panel">✕</button>
       </div>
       <div id="token-chart-wrap">
         <h4>Token Usage</h4>
         <div class="bar-row">
           <span class="bar-label">Prompt</span>
           <div class="bar-track"><div class="bar-fill prompt" id="bar-prompt" style="width:0%"></div></div>
-          <span class="bar-val" id="val-prompt">0</span>
+          <span class="bar-val" id="val-prompt" aria-live="polite">0</span>
         </div>
         <div class="bar-row">
           <span class="bar-label">Output</span>
           <div class="bar-track"><div class="bar-fill completion" id="bar-completion" style="width:0%"></div></div>
-          <span class="bar-val" id="val-completion">0</span>
+          <span class="bar-val" id="val-completion" aria-live="polite">0</span>
         </div>
       </div>
       <div id="ctx-ring-wrap">
-        <svg width="52" height="52" viewBox="0 0 52 52">
+        <svg width="52" height="52" viewBox="0 0 52 52" aria-label="Context usage indicator">
           <circle cx="26" cy="26" r="22" fill="none" stroke="var(--border2)" stroke-width="5"/>
           <circle id="ctx-ring" cx="26" cy="26" r="22" fill="none" stroke="var(--teal)" stroke-width="5"
             stroke-dasharray="138.2" stroke-dashoffset="138.2" stroke-linecap="round"
@@ -700,8 +707,8 @@ kbd{
         </svg>
         <div id="ctx-ring-info">
           <div class="ctx-title">Context used</div>
-          <div class="ctx-val" id="ctx-pct">0%</div>
-          <div class="ctx-sub" id="ctx-sub">0 / ~8k tokens</div>
+          <div class="ctx-val" id="ctx-pct" aria-live="polite">0%</div>
+          <div class="ctx-sub" id="ctx-sub" aria-live="polite">0 / ~8k tokens</div>
         </div>
       </div>
       <div class="s-section">
@@ -718,1019 +725,6 @@ kbd{
   </div>
 </div>
 
-<script>
-const $ = id => document.getElementById(id);
-const REFERER = location.protocol === 'file:' ? 'http://localhost' : location.href;
-
-const PROVIDERS = {
-  openrouter: {
-    name: 'OpenRouter',
-    baseUrl: 'https://openrouter.ai/api/v1',
-    authKey: 'cwi_or_key',
-    modelEndpoint: '/models',
-    chatEndpoint: '/chat/completions',
-    authHeader: 'Authorization',
-    extraHeaders: { 'HTTP-Referer': REFERER, 'X-Title': 'ChatWithIt' },
-    badgeClass: 'or',
-    badgeLabel: 'OR',
-  },
-  huggingface: {
-    name: 'Hugging Face',
-    baseUrl: 'https://router.huggingface.co/v1',
-    authKey: 'cwi_hf_token',
-    modelEndpoint: '/models',
-    chatEndpoint: '/chat/completions',
-    authHeader: 'Authorization',
-    extraHeaders: { 'HTTP-Referer': REFERER, 'X-Title': 'ChatWithIt' },
-    badgeClass: 'hf',
-    badgeLabel: 'HF',
-  }
-};
-
-const CURATED_FREE = {
-  openrouter: [
-    { id: 'deepseek/deepseek-r1:free', name: 'DeepSeek R1 (Reasoning · 64k)', ctx: 65536 },
-    { id: 'deepseek/deepseek-chat-v3-0324:free', name: 'DeepSeek Chat v3 (64k)', ctx: 65536 },
-    { id: 'meta-llama/llama-4-maverick:free', name: 'Llama 4 Maverick (1M ctx)', ctx: 1048576 },
-    { id: 'meta-llama/llama-4-scout:free', name: 'Llama 4 Scout (512k ctx)', ctx: 524288 },
-    { id: 'qwen/qwen3-30b-a3b:free', name: 'Qwen3 30B A3B (128k)', ctx: 131072 },
-    { id: 'google/gemma-3-12b-it:free', name: 'Gemma 3 12B IT (128k)', ctx: 131072 },
-    { id: 'mistralai/devstral-small:free', name: 'Devstral Small (32k)', ctx: 32768 },
-    { id: 'openchat/openchat-7b:free', name: 'OpenChat 7B (8k)', ctx: 8192 }
-  ],
-  huggingface: [
-    { id: 'meta-llama/Llama-3.1-8B-Instruct', name: 'Llama 3.1 8B Instruct', ctx: 8192, provider: 'Providers' },
-    { id: 'meta-llama/Llama-3.1-70B-Instruct', name: 'Llama 3.1 70B Instruct', ctx: 8192, provider: 'Providers' },
-    { id: 'mistralai/Mistral-7B-Instruct-v0.3', name: 'Mistral 7B Instruct v0.3', ctx: 32768, provider: 'Providers' },
-    { id: 'Qwen/Qwen2.5-7B-Instruct', name: 'Qwen 2.5 7B Instruct', ctx: 32768, provider: 'Providers' },
-    { id: 'deepseek-ai/DeepSeek-V3', name: 'DeepSeek V3', ctx: 131072, provider: 'Providers' },
-    { id: 'deepseek-ai/DeepSeek-R1', name: 'DeepSeek R1', ctx: 131072, provider: 'Providers' }
-  ]
-};
-
-let currentProvider = 'openrouter';
-let apiKey = '';
-let hfToken = '';
-let chatHistory = [];
-let attachedFiles = [];
-let isTyping = false;
-let compareMode = false;
-let compareModelB = 'none';
-let searchMatches = [];
-let searchCurrent = 0;
-let voiceRecording = false;
-let plainMode = false;
-let currentPersonaPrompt = 'You are a helpful AI assistant. Be concise, accurate, and developer-friendly. Use Markdown formatting in your responses.';
-let totalPromptTokens = 0;
-let totalCompletionTokens = 0;
-let turnTokens = [];
-let modelContextMap = {};
-let allModels = [];
-let currentBubble = null;
-
-function toast(msg, color = 'var(--fg-muted)'){
-  const t = document.createElement('div');
-  t.className = 'toast';
-  t.innerHTML = `<span style="color:${color}">${msg}</span>`;
-  $('toast-container').appendChild(t);
-  setTimeout(() => t.remove(), 2900);
-}
-
-function setStatus(msg, type = 'neutral', isHF = false){
-  const el = isHF ? $('hfStatus') : $('status');
-  const colors = { ok: 'var(--green)', error: 'var(--rose)', info: 'var(--accent)', neutral: 'var(--fg-muted)' };
-  el.style.color = colors[type] || colors.neutral;
-  el.style.borderColor = type === 'neutral' ? 'var(--border)' : colors[type];
-  el.textContent = msg;
-}
-
-function updateMonitor(){
-  const msgs = chatHistory.length;
-  const turns = Math.floor(msgs / 2);
-  $('monitor').innerHTML = `📊 <b>${msgs}</b> msgs · <b>${turns}</b> turns · <b>${totalPromptTokens + totalCompletionTokens}</b> tokens`;
-}
-
-function updateStats(promptTok, completionTok){
-  totalPromptTokens += promptTok;
-  totalCompletionTokens += completionTok;
-  turnTokens.push({ p: promptTok, c: completionTok });
-  const max = Math.max(totalPromptTokens, totalCompletionTokens, 1);
-  $('bar-prompt').style.width = (totalPromptTokens / max * 100) + '%';
-  $('bar-completion').style.width = (totalCompletionTokens / max * 100) + '%';
-  $('val-prompt').textContent = totalPromptTokens;
-  $('val-completion').textContent = totalCompletionTokens;
-
-  const modelId = $('modelSelect').value;
-  const ctxSize = modelContextMap[modelId] || 8192;
-  const used = totalPromptTokens + totalCompletionTokens;
-  const pct = Math.min(used / ctxSize, 1);
-  const circumference = 138.2;
-  $('ctx-ring').style.strokeDashoffset = circumference * (1 - pct);
-  $('ctx-ring').style.stroke = pct > 0.8 ? 'var(--rose)' : pct > 0.5 ? 'var(--amber)' : 'var(--teal)';
-  $('ctx-pct').textContent = Math.round(pct * 100) + '%';
-  $('ctx-sub').textContent = `${used.toLocaleString()} / ~${(ctxSize / 1000).toFixed(0)}k tokens`;
-
-  const tl = $('turn-list');
-  tl.innerHTML = '';
-  turnTokens.slice(-8).forEach((t, i) => {
-    const row = document.createElement('div');
-    row.style.cssText = 'display:flex;justify-content:space-between;font-size:.68rem;color:var(--fg-muted);font-family:var(--mono);padding:.1rem 0;';
-    row.innerHTML = `<span>Turn ${turnTokens.length - Math.min(turnTokens.length,8) + i + 1}</span><span style="color:var(--accent)">${t.p}p</span><span style="color:var(--teal)">${t.c}c</span>`;
-    tl.appendChild(row);
-  });
-  updateMonitor();
-}
-
-function getProvider(){ return PROVIDERS[currentProvider]; }
-function getAuthToken(){ return currentProvider === 'openrouter' ? apiKey : hfToken; }
-
-function isMobile(){ return window.innerWidth <= 768; }
-
-function openSidebar(){
-  if(isMobile()){
-    $('sidebar').classList.add('open');
-    $('mobileOverlay').classList.add('open');
-  }else{
-    $('sidebar').classList.remove('collapsed');
-  }
-}
-function closeSidebar(){
-  if(isMobile()){
-    $('sidebar').classList.remove('open');
-    $('mobileOverlay').classList.remove('open');
-  }else{
-    $('sidebar').classList.add('collapsed');
-  }
-}
-function toggleSidebar(){
-  if(isMobile()){
-    const open = $('sidebar').classList.contains('open');
-    open ? closeSidebar() : openSidebar();
-  }else{
-    $('sidebar').classList.toggle('collapsed');
-  }
-}
-function closeTransientPanels(){
-  $('theme-menu').classList.remove('open');
-  closeSearch();
-}
-
-function populateModels(list){
-  ['modelSelect','modelSelectB'].forEach(id => {
-    const sel = $(id);
-    const prev = sel.value;
-    sel.innerHTML = '';
-    const opt0 = document.createElement('option');
-    opt0.value = 'none';
-    opt0.textContent = id === 'modelSelect' ? '— select a model —' : '— select model B —';
-    sel.appendChild(opt0);
-    list.forEach(m => {
-      const opt = document.createElement('option');
-      opt.value = m.id;
-      opt.textContent = m.provider ? `${m.name} [${m.provider}]` : m.name;
-      sel.appendChild(opt);
-    });
-    if(list.some(m => m.id === prev)) sel.value = prev;
-  });
-}
-
-function updateBadge(){
-  const v = $('modelSelect').value;
-  const p = getProvider();
-  if(v === 'none'){
-    $('activeBadge').innerHTML = `<span class="crumb-dot"></span>No model selected`;
-    return;
-  }
-  const model = allModels.find(m => m.id === v);
-  const badge = `<span class="provider-badge ${p.badgeClass}">${p.badgeLabel}</span>`;
-  $('activeBadge').innerHTML = `<span class="crumb-dot"></span>${badge} ${model ? model.name : v}`;
-}
-
-async function fetchFreeModels(){
-  const p = getProvider();
-  const token = getAuthToken();
-
-  if(!token){
-    populateModels(CURATED_FREE[currentProvider]);
-    allModels = CURATED_FREE[currentProvider];
-    CURATED_FREE[currentProvider].forEach(m => modelContextMap[m.id] = m.ctx);
-    setStatus(`Please enter your ${p.name} API key`, 'info', currentProvider === 'huggingface');
-    updateBadge();
-    return;
-  }
-
-  setStatus(`Fetching ${p.name} models…`, 'info', currentProvider === 'huggingface');
-  try{
-    const headers = { [p.authHeader]: `Bearer ${token}`, ...p.extraHeaders };
-    const res = await fetch(`${p.baseUrl}${p.modelEndpoint}`, { headers });
-    if(!res.ok) throw new Error(`${p.name} API error: ${res.status}`);
-    const data = await res.json();
-
-    let models = [];
-    if(currentProvider === 'openrouter'){
-      models = (data.data || [])
-        .filter(m => m.id && m.id.endsWith(':free'))
-        .map(m => ({
-          id: m.id,
-          name: `${m.name || m.id} (${Math.round((m.context_length || 8192)/1000)}k)`,
-          ctx: m.context_length || 8192
-        }))
-        .sort((a,b) => a.name.localeCompare(b.name));
-    }else{
-      const freeIds = new Set(CURATED_FREE.huggingface.map(m => m.id));
-      models = (data.data || [])
-        .filter(m => freeIds.has(m.id))
-        .map(m => {
-          const curated = CURATED_FREE.huggingface.find(c => c.id === m.id);
-          return {
-            id: m.id,
-            name: curated?.name || m.id,
-            ctx: curated?.ctx || 8192,
-            provider: curated?.provider || 'Providers'
-          };
-        })
-        .sort((a,b) => a.name.localeCompare(b.name));
-    }
-
-    if(!models.length) throw new Error('No models found');
-    allModels = models;
-    models.forEach(m => modelContextMap[m.id] = m.ctx);
-    populateModels(models);
-    setStatus(`✓ ${models.length} ${p.name} models loaded`, 'ok', currentProvider === 'huggingface');
-    toast(`✅ ${models.length} ${p.name} models loaded`, 'var(--green)');
-    updateBadge();
-  }catch(e){
-    allModels = CURATED_FREE[currentProvider];
-    CURATED_FREE[currentProvider].forEach(m => modelContextMap[m.id] = m.ctx);
-    populateModels(allModels);
-    setStatus(`Using curated ${p.name} list`, 'ok', currentProvider === 'huggingface');
-    toast(`⚠️ Using curated ${p.name} list`, 'var(--amber)');
-    updateBadge();
-  }
-}
-
-async function readFilesAsText(files){
-  const results = [];
-  for(const f of files){
-    try{
-      const text = await f.text();
-      results.push(`\n\n--- File: ${f.name} ---\n${text.slice(0,8000)}`);
-    }catch{
-      results.push(`\n\n--- File: ${f.name} (unreadable) ---`);
-    }
-  }
-  return results.join('');
-}
-
-function showChat(){
-  $('welcome').style.display = 'none';
-  $('chat').style.display = 'flex';
-}
-
-function appendMessage(role, content, container = null){
-  const wrap = document.createElement('div');
-  wrap.className = `msg-wrap ${role}`;
-
-  const avatar = document.createElement('div');
-  avatar.className = `avatar ${role}`;
-  avatar.textContent = role === 'user' ? '👤' : '🤖';
-
-  const col = document.createElement('div');
-  col.className = 'bubble-col';
-
-  const bubble = document.createElement('div');
-  bubble.className = `bubble ${role}`;
-  if(role === 'assistant') bubble.innerHTML = marked.parse(content || '');
-  else bubble.textContent = content;
-
-  const actions = document.createElement('div');
-  actions.className = 'msg-actions';
-
-  const copyBtn = document.createElement('button');
-  copyBtn.className = 'msg-action-btn';
-  copyBtn.textContent = '📋 Copy';
-  copyBtn.onclick = () => {
-    navigator.clipboard.writeText(content || bubble.innerText || '');
-    toast('📋 Copied!');
-  };
-  actions.appendChild(copyBtn);
-
-  if(role === 'assistant'){
-    const regenBtn = document.createElement('button');
-    regenBtn.className = 'msg-action-btn';
-    regenBtn.textContent = '↺ Regen';
-    regenBtn.onclick = () => regenerateLast();
-    actions.appendChild(regenBtn);
-  }
-
-  const meta = document.createElement('div');
-  meta.className = 'msg-meta';
-  meta.textContent = new Date().toLocaleTimeString();
-
-  col.appendChild(bubble);
-  col.appendChild(actions);
-  col.appendChild(meta);
-  wrap.appendChild(avatar);
-  wrap.appendChild(col);
-
-  const target = container || $('chat');
-  target.appendChild(wrap);
-  target.scrollTop = target.scrollHeight;
-  return bubble;
-}
-
-let typingEls = [];
-function showTyping(container = null){
-  const el = document.createElement('div');
-  el.className = 'msg-wrap assistant';
-  el.innerHTML = `<div class="avatar assistant">🤖</div><div class="bubble-col"><div class="bubble assistant"><div class="typing"><span></span><span></span><span></span></div></div></div>`;
-  const target = container || $('chat');
-  target.appendChild(el);
-  target.scrollTop = target.scrollHeight;
-  typingEls.push(el);
-  return el;
-}
-function removeTyping(targetEl = null){
-  if(targetEl){
-    targetEl.remove();
-    typingEls = typingEls.filter(t => t !== targetEl);
-    return;
-  }
-  typingEls.forEach(t => t.remove());
-  typingEls = [];
-}
-
-async function callModel(modelId, messages, onChunk, onDone, onError){
-  const p = getProvider();
-  const token = getAuthToken();
-  const body = {
-    model: modelId,
-    messages,
-    stream: true,
-    temperature: parseFloat($('tempSlider').value),
-    max_tokens: parseInt($('maxTokensSlider').value)
-  };
-
-  try{
-    const res = await fetch(`${p.baseUrl}${p.chatEndpoint}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        [p.authHeader]: `Bearer ${token}`,
-        ...p.extraHeaders
-      },
-      body: JSON.stringify(body)
-    });
-
-    if(!res.ok){
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error?.message || `${p.name} HTTP ${res.status}`);
-    }
-
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-    let full = '';
-    let promptTok = 0, completionTok = 0;
-
-    while(true){
-      const { done, value } = await reader.read();
-      if(done) break;
-      const chunk = decoder.decode(value);
-      const lines = chunk.split('\n').filter(l => l.startsWith('data: '));
-      for(const line of lines){
-        const data = line.slice(6).trim();
-        if(data === '[DONE]') continue;
-        try{
-          const json = JSON.parse(data);
-          const delta = json.choices?.[0]?.delta?.content || '';
-          if(delta){
-            full += delta;
-            onChunk(delta, full);
-          }
-          if(json.usage){
-            promptTok = json.usage.prompt_tokens || promptTok;
-            completionTok = json.usage.completion_tokens || completionTok;
-          }
-        }catch{}
-      }
-    }
-
-    onDone(full, promptTok, completionTok);
-  }catch(e){
-    onError(e);
-  }
-}
-
-async function sendMessage(text, isRegen = false){
-  if((!text || !text.trim()) && attachedFiles.length === 0) return;
-  const modelId = $('modelSelect').value;
-  if(modelId === 'none'){
-    toast('⚠️ Please select a model first', 'var(--amber)');
-    return;
-  }
-  if(!getAuthToken()){
-    toast(`⚠️ Please authenticate with ${getProvider().name} first`, 'var(--amber)');
-    return;
-  }
-  if(isTyping) return;
-
-  let finalText = (text || '').trim();
-
-  if(attachedFiles.length){
-    finalText += await readFilesAsText(attachedFiles);
-    attachedFiles = [];
-    $('fileCount2').textContent = '';
-    $('sidebarFileCount').textContent = 'No files selected';
-    $('mainFileInput').value = '';
-    $('sidebarFileInput').value = '';
-  }
-
-  const sysPrompt = $('systemPromptInput').value.trim() || currentPersonaPrompt;
-  if(!isRegen){
-    chatHistory.push({ role: 'user', content: finalText });
-    showChat();
-    appendMessage('user', text.trim());
-  }
-
-  $('userInput').value = '';
-  autoResize($('userInput'));
-  updateCharCount();
-  $('sendBtn').disabled = true;
-  isTyping = true;
-
-  const messages = [{ role: 'system', content: sysPrompt }, ...chatHistory];
-
-  if(compareMode && compareModelB !== 'none'){
-    await runCompare(messages, finalText);
-    return;
-  }
-
-  const typing = showTyping();
-  const bubble = appendMessage('assistant', '');
-  currentBubble = bubble;
-  removeTyping(typing);
-
-  callModel(
-    modelId,
-    messages,
-    (delta, full) => {
-      bubble.innerHTML = marked.parse(full);
-      $('chat').scrollTop = $('chat').scrollHeight;
-    },
-    (full, p, c) => {
-      chatHistory.push({ role: 'assistant', content: full });
-      updateStats(p || Math.ceil((messages.map(m => m.content).join('').length) / 4), c || Math.ceil(full.length / 4));
-      $('sendBtn').disabled = false;
-      isTyping = false;
-      currentBubble = null;
-    },
-    (e) => {
-      bubble.innerHTML = `<span style="color:var(--rose)">❌ Error: ${e.message}</span>`;
-      toast(`❌ ${e.message}`, 'var(--rose)');
-      $('sendBtn').disabled = false;
-      isTyping = false;
-      chatHistory.pop();
-      currentBubble = null;
-    }
-  );
-}
-
-async function runCompare(messages, userText){
-  const modelA = $('modelSelect').value;
-  const modelB = compareModelB;
-  if(modelB === 'none'){
-    toast('⚠️ Select Model B for compare mode', 'var(--amber)');
-    $('sendBtn').disabled = false;
-    isTyping = false;
-    return;
-  }
-
-  const chatA = $('cmp-chat-a');
-  const chatB = $('cmp-chat-b');
-  chatA.innerHTML += '';
-  chatB.innerHTML += '';
-
-  appendMessage('user', userText, chatA);
-  appendMessage('user', userText, chatB);
-
-  const typingA = showTyping(chatA);
-  const typingB = showTyping(chatB);
-  const bubbleA = appendMessage('assistant', '', chatA);
-  const bubbleB = appendMessage('assistant', '', chatB);
-  removeTyping(typingA);
-  removeTyping(typingB);
-
-  let doneA = false, doneB = false;
-  const finish = () => {
-    if(doneA && doneB){
-      $('sendBtn').disabled = false;
-      isTyping = false;
-    }
-  };
-
-  callModel(
-    modelA,
-    messages,
-    (d, f) => { bubbleA.innerHTML = marked.parse(f); chatA.scrollTop = chatA.scrollHeight; },
-    (f, p, c) => { updateStats(p || Math.ceil(f.length / 4), c || Math.ceil(f.length / 4)); doneA = true; finish(); },
-    (e) => { bubbleA.innerHTML = `<span style="color:var(--rose)">❌ ${e.message}</span>`; doneA = true; finish(); }
-  );
-
-  callModel(
-    modelB,
-    messages,
-    (d, f) => { bubbleB.innerHTML = marked.parse(f); chatB.scrollTop = chatB.scrollHeight; },
-    (f, p, c) => { updateStats(p || Math.ceil(f.length / 4), c || Math.ceil(f.length / 4)); doneB = true; finish(); },
-    (e) => { bubbleB.innerHTML = `<span style="color:var(--rose)">❌ ${e.message}</span>`; doneB = true; finish(); }
-  );
-}
-
-function regenerateLast(){
-  if(isTyping) return;
-  if(chatHistory.length < 2) return;
-  const lastAssistant = chatHistory[chatHistory.length - 1];
-  const lastUser = chatHistory[chatHistory.length - 2];
-  if(lastAssistant?.role === 'assistant') chatHistory.pop();
-  if(lastUser?.role === 'user'){
-    const text = lastUser.content;
-    sendMessage(text, true);
-  }
-}
-
-function autoResize(el){
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 160) + 'px';
-}
-function updateCharCount(){
-  $('char-count').textContent = $('userInput').value.length;
-}
-
-function handleFiles(files){
-  attachedFiles = [...files];
-  const count = attachedFiles.length;
-  $('fileCount2').textContent = count ? `${count} file${count > 1 ? 's' : ''}` : '';
-  $('sidebarFileCount').textContent = count ? `${count} file${count > 1 ? 's' : ''} attached` : 'No files selected';
-  if(count) toast(`📎 ${count} file(s) attached`, 'var(--green)');
-}
-
-function openSearch(){
-  $('search-overlay').classList.add('open');
-  $('search-input-box').focus();
-}
-function closeSearch(){
-  $('search-overlay').classList.remove('open');
-  clearSearchHighlights();
-  $('search-results-count').textContent = '';
-}
-function clearSearchHighlights(){
-  const root = compareMode ? $('cmp-chat-a') : $('chat');
-  root.querySelectorAll('.search-highlight').forEach(el => {
-    el.replaceWith(document.createTextNode(el.textContent));
-  });
-  searchMatches = [];
-}
-function runSearch(){
-  clearSearchHighlights();
-  const q = $('search-input-box').value.trim().toLowerCase();
-  if(!q){
-    $('search-results-count').textContent = '';
-    return;
-  }
-
-  const root = compareMode ? $('cmp-chat-a') : $('chat');
-  const bubbles = root.querySelectorAll('.bubble');
-
-  bubbles.forEach(b => {
-    const walker = document.createTreeWalker(b, NodeFilter.SHOW_TEXT);
-    const nodes = [];
-    while(walker.nextNode()) nodes.push(walker.currentNode);
-    nodes.forEach(node => {
-      const text = node.textContent;
-      const lower = text.toLowerCase();
-      const idx = lower.indexOf(q);
-      if(idx === -1) return;
-      const before = document.createTextNode(text.slice(0, idx));
-      const mark = document.createElement('span');
-      mark.className = 'search-highlight';
-      mark.textContent = text.slice(idx, idx + q.length);
-      const after = document.createTextNode(text.slice(idx + q.length));
-      const parent = node.parentNode;
-      parent.replaceChild(after, node);
-      parent.insertBefore(mark, after);
-      parent.insertBefore(before, mark);
-      searchMatches.push(mark);
-    });
-  });
-
-  searchCurrent = 0;
-  $('search-results-count').textContent = `${searchMatches.length} found`;
-  if(searchMatches.length) highlightCurrent();
-}
-function highlightCurrent(){
-  searchMatches.forEach((m, i) => m.classList.toggle('current', i === searchCurrent));
-  searchMatches[searchCurrent]?.scrollIntoView({ block: 'center', behavior: 'smooth' });
-}
-function navSearch(dir){
-  if(!searchMatches.length) return;
-  searchCurrent = (searchCurrent + dir + searchMatches.length) % searchMatches.length;
-  highlightCurrent();
-}
-
-function clearChat(){
-  chatHistory = [];
-  $('chat').innerHTML = '';
-  $('cmp-chat-a').innerHTML = '';
-  $('cmp-chat-b').innerHTML = '';
-  $('chat').style.display = 'none';
-  $('welcome').style.display = 'flex';
-  totalPromptTokens = 0;
-  totalCompletionTokens = 0;
-  turnTokens = [];
-  $('bar-prompt').style.width = '0%';
-  $('bar-completion').style.width = '0%';
-  $('val-prompt').textContent = '0';
-  $('val-completion').textContent = '0';
-  $('ctx-pct').textContent = '0%';
-  $('ctx-sub').textContent = '0 / ~8k tokens';
-  $('ctx-ring').style.strokeDashoffset = '138.2';
-  updateMonitor();
-  toast('🗑️ Chat cleared');
-}
-
-function download(name, content){
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([content], { type: 'text/plain' }));
-  a.download = name;
-  a.click();
-}
-function exportMD(){
-  download('chatWithIt-export.md', chatHistory.map(m => `**${m.role}:** ${m.content}`).join('\n\n---\n\n'));
-  toast('📝 Exported as Markdown', 'var(--green)');
-}
-function exportJSON(){
-  download('chatWithIt-export.json', JSON.stringify({ provider: currentProvider, model: $('modelSelect').value, history: chatHistory }, null, 2));
-  toast('{ } Exported as JSON', 'var(--green)');
-}
-function exportTXT(){
-  download('chatWithIt-export.txt', chatHistory.map(m => `[${m.role.toUpperCase()}]\n${m.content}`).join('\n\n'));
-  toast('📄 Exported as Plain Text', 'var(--green)');
-}
-
-function saveConversation(){
-  if(!chatHistory.length){
-    toast('⚠️ Nothing to save', 'var(--amber)');
-    return;
-  }
-  const saves = JSON.parse(localStorage.getItem('cwi_saves') || '[]');
-  const title = (chatHistory.find(m => m.role === 'user')?.content || 'Untitled').slice(0, 40);
-  saves.push({ title, history: chatHistory, provider: currentProvider, model: $('modelSelect').value, ts: Date.now() });
-  localStorage.setItem('cwi_saves', JSON.stringify(saves.slice(-20)));
-  renderSavedList();
-  toast(`💾 Saved: "${title}"`, 'var(--green)');
-}
-
-function renderSavedList(){
-  const saves = JSON.parse(localStorage.getItem('cwi_saves') || '[]');
-  const list = $('saved-list');
-  if(!saves.length){
-    list.innerHTML = '<div style="font-size:.75rem;color:var(--fg-dim);text-align:center;padding:.5rem;">No saved chats</div>';
-    return;
-  }
-  list.innerHTML = saves.map((s, i) => `
-    <div class="saved-item" data-i="${i}">
-      <span title="${s.title}">${s.title} <span class="provider-badge ${PROVIDERS[s.provider]?.badgeClass || 'or'}">${PROVIDERS[s.provider]?.badgeLabel || 'OR'}</span></span>
-      <span class="saved-del" data-i="${i}" title="Delete">✕</span>
-    </div>
-  `).join('');
-
-  list.querySelectorAll('.saved-item').forEach(item => {
-    item.addEventListener('click', async e => {
-      if(e.target.classList.contains('saved-del')) return;
-      const saves2 = JSON.parse(localStorage.getItem('cwi_saves') || '[]');
-      const s = saves2[item.dataset.i];
-      if(!s) return;
-
-      currentProvider = s.provider || 'openrouter';
-      $('providerSelect').value = currentProvider;
-      $('or-auth-section').style.display = currentProvider === 'openrouter' ? 'flex' : 'none';
-      $('hf-auth-section').style.display = currentProvider === 'huggingface' ? 'flex' : 'none';
-
-      const historyCopy = Array.isArray(s.history) ? [...s.history] : [];
-      clearChat();
-      await fetchFreeModels();
-      $('modelSelect').value = s.model || 'none';
-      updateBadge();
-      chatHistory = historyCopy;
-      showChat();
-      chatHistory.forEach(m => appendMessage(m.role, m.content));
-      toast(`📂 Loaded: "${s.title}"`);
-      if(isMobile()) closeSidebar();
-    });
-  });
-
-  list.querySelectorAll('.saved-del').forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      const saves2 = JSON.parse(localStorage.getItem('cwi_saves') || '[]');
-      saves2.splice(Number(btn.dataset.i), 1);
-      localStorage.setItem('cwi_saves', JSON.stringify(saves2));
-      renderSavedList();
-      toast('🗑️ Deleted save');
-    });
-  });
-}
-
-function handleMention(){
-  const val = $('userInput').value;
-  const atPos = val.lastIndexOf('@');
-  if(atPos === -1 || val.slice(atPos).includes(' ')){
-    $('mention-popup').style.display = 'none';
-    return;
-  }
-  const commands = ['@clear','@save','@export','@persona:default','@persona:engineer','@persona:writer','@persona:teacher','@persona:debate','@persona:json'];
-  const query = val.slice(atPos).toLowerCase();
-  const matches = commands.filter(c => c.startsWith(query));
-  if(!matches.length){
-    $('mention-popup').style.display = 'none';
-    return;
-  }
-  $('mention-popup').innerHTML = matches.map((c, i) => `<div class="mention-item${i === 0 ? ' selected' : ''}" data-cmd="${c}">${c}</div>`).join('');
-  $('mention-popup').style.display = 'block';
-  $('mention-popup').querySelectorAll('.mention-item').forEach(item => {
-    item.addEventListener('click', () => applyCommand(item.dataset.cmd));
-  });
-}
-
-function applyCommand(cmd){
-  $('mention-popup').style.display = 'none';
-  const val = $('userInput').value;
-  const atPos = val.lastIndexOf('@');
-  $('userInput').value = val.slice(0, atPos);
-  updateCharCount();
-  if(cmd === '@clear') clearChat();
-  else if(cmd === '@save') saveConversation();
-  else if(cmd === '@export') exportMD();
-  else if(cmd.startsWith('@persona:')){
-    const id = cmd.split(':')[1];
-    document.querySelector(`.persona-card[data-id="${id}"]`)?.click();
-  }
-}
-
-function openShortcuts(){ $('shortcuts-modal').classList.add('open'); }
-function closeShortcuts(){ $('shortcuts-modal').classList.remove('open'); }
-
-document.querySelectorAll('.persona-card').forEach(card => {
-  card.addEventListener('click', () => {
-    document.querySelectorAll('.persona-card').forEach(c => c.classList.remove('active'));
-    card.classList.add('active');
-    currentPersonaPrompt = card.dataset.prompt;
-    $('systemPromptInput').value = currentPersonaPrompt;
-    toast(`🎭 Persona: ${card.querySelector('.p-name').textContent}`);
-  });
-});
-
-document.querySelectorAll('.prompt-chip').forEach(chip => {
-  chip.addEventListener('click', () => {
-    $('userInput').value = chip.dataset.prompt;
-    $('userInput').focus();
-    autoResize($('userInput'));
-    updateCharCount();
-    if(isMobile()) closeSidebar();
-  });
-});
-
-$('providerSelect').addEventListener('change', e => {
-  currentProvider = e.target.value;
-  $('or-auth-section').style.display = currentProvider === 'openrouter' ? 'flex' : 'none';
-  $('hf-auth-section').style.display = currentProvider === 'huggingface' ? 'flex' : 'none';
-
-  const saved = localStorage.getItem(getProvider().authKey);
-  if(saved){
-    if(currentProvider === 'openrouter'){ apiKey = saved; $('apiKey').value = saved; }
-    else { hfToken = saved; $('hfToken').value = saved; }
-  }
-  fetchFreeModels();
-});
-
-$('authBtn').addEventListener('click', async () => {
-  const key = $('apiKey').value.trim();
-  if(!key.startsWith('sk-or-')){
-    setStatus('Invalid OpenRouter key format', 'error');
-    return;
-  }
-  apiKey = key;
-  localStorage.setItem('cwi_or_key', key);
-  setStatus('Authenticating…', 'info');
-  await fetchFreeModels();
-});
-
-$('hfAuthBtn').addEventListener('click', async () => {
-  const key = $('hfToken').value.trim();
-  if(!key.startsWith('hf_')){
-    setStatus('Invalid HF token format', 'error', true);
-    return;
-  }
-  hfToken = key;
-  localStorage.setItem('cwi_hf_token', key);
-  setStatus('Connecting to Hugging Face…', 'info', true);
-  await fetchFreeModels();
-});
-
-$('clearOrKey').addEventListener('click', () => {
-  localStorage.removeItem('cwi_or_key');
-  $('apiKey').value = '';
-  apiKey = '';
-  setStatus('OpenRouter key cleared', 'info');
-});
-$('clearHfKey').addEventListener('click', () => {
-  localStorage.removeItem('cwi_hf_token');
-  $('hfToken').value = '';
-  hfToken = '';
-  setStatus('Hugging Face token cleared', 'info', true);
-});
-
-$('refreshModels').addEventListener('click', fetchFreeModels);
-$('modelSelect').addEventListener('change', updateBadge);
-$('modelSelectB').addEventListener('change', () => {
-  compareModelB = $('modelSelectB').value;
-  const m = allModels.find(x => x.id === compareModelB);
-  $('cmp-label-b').textContent = m ? m.name : 'Model B';
-});
-
-$('tempSlider').addEventListener('input', e => $('tempVal').textContent = parseFloat(e.target.value).toFixed(2));
-$('maxTokensSlider').addEventListener('input', e => $('maxTokensVal').textContent = e.target.value);
-
-$('mainFileInput').addEventListener('change', e => handleFiles(e.target.files));
-$('sidebarFileInput').addEventListener('change', e => handleFiles(e.target.files));
-
-const dropZone = $('dropZone');
-['dragover','dragenter'].forEach(ev => dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.add('drag-over'); }));
-['dragleave','drop'].forEach(ev => dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.remove('drag-over'); }));
-dropZone.addEventListener('drop', e => handleFiles(e.dataTransfer.files));
-
-$('userInput').addEventListener('input', () => {
-  autoResize($('userInput'));
-  updateCharCount();
-  handleMention();
-});
-$('userInput').addEventListener('keydown', e => {
-  if(e.key === 'Enter' && !e.shiftKey){
-    e.preventDefault();
-    sendMessage($('userInput').value);
-  }
-});
-$('sendBtn').addEventListener('click', () => sendMessage($('userInput').value));
-
-$('fmtToggle').addEventListener('click', () => {
-  plainMode = !plainMode;
-  $('fmtToggle').textContent = plainMode ? 'Aa Markdown' : 'Aa Plain';
-  toast(plainMode ? '📄 Plain text mode' : '✨ Markdown mode');
-});
-
-$('voiceBtn').addEventListener('click', () => {
-  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!SpeechRec){
-    toast('❌ Speech not supported in this browser', 'var(--rose)');
-    return;
-  }
-  if(voiceRecording) return;
-  const rec = new SpeechRec();
-  rec.lang = 'en-US';
-  rec.interimResults = false;
-  voiceRecording = true;
-  $('voiceBtn').classList.add('recording');
-  $('voiceBtn').textContent = '🔴 Listening…';
-  rec.start();
-  rec.onresult = e => {
-    $('userInput').value += e.results[0][0].transcript + ' ';
-    autoResize($('userInput'));
-    updateCharCount();
-    toast('🎤 Voice captured!', 'var(--green)');
-  };
-  rec.onerror = () => toast('❌ Voice error', 'var(--rose)');
-  rec.onend = () => {
-    voiceRecording = false;
-    $('voiceBtn').classList.remove('recording');
-    $('voiceBtn').textContent = '🎤 Voice';
-  };
-});
-
-$('searchBtn').addEventListener('click', openSearch);
-$('search-close').addEventListener('click', closeSearch);
-$('search-input-box').addEventListener('input', runSearch);
-$('search-prev').addEventListener('click', () => navSearch(-1));
-$('search-next').addEventListener('click', () => navSearch(1));
-
-$('clearBtn').addEventListener('click', clearChat);
-$('saveConvoBtn').addEventListener('click', saveConversation);
-$('exportBtn').addEventListener('click', exportMD);
-$('expMD').addEventListener('click', exportMD);
-$('expJSON').addEventListener('click', exportJSON);
-$('expTXT').addEventListener('click', exportTXT);
-
-$('compareBtn').addEventListener('click', () => {
-  compareMode = !compareMode;
-  document.body.classList.toggle('compare-mode', compareMode);
-  $('compareBtn').classList.toggle('active', compareMode);
-  $('cmp-model-section').style.display = compareMode ? 'flex' : 'none';
-  if(compareMode){
-    showChat();
-    $('chat').style.display = 'none';
-  }else{
-    $('chat').style.display = chatHistory.length ? 'flex' : 'none';
-  }
-  toast(compareMode ? '⚖️ Compare mode ON' : '⚖️ Compare mode OFF');
-});
-
-$('statsBtn').addEventListener('click', () => {
-  $('right-panel').classList.toggle('open');
-  $('statsBtn').classList.toggle('active', $('right-panel').classList.contains('open'));
-});
-$('rp-close').addEventListener('click', () => {
-  $('right-panel').classList.remove('open');
-  $('statsBtn').classList.remove('active');
-});
-
-$('sidebarToggle').addEventListener('click', toggleSidebar);
-$('mobileOverlay').addEventListener('click', () => {
-  closeSidebar();
-  $('right-panel').classList.remove('open');
-});
-
-const themeBtn = $('themeBtn');
-const themeMenu = $('theme-menu');
-themeBtn.addEventListener('click', e => {
-  e.stopPropagation();
-  themeMenu.classList.toggle('open');
-});
-document.querySelectorAll('.theme-opt').forEach(opt => {
-  opt.addEventListener('click', () => {
-    const theme = opt.dataset.theme;
-    document.body.classList.remove('theme-midnight','theme-nordic','theme-emerald','theme-crimson','theme-paper','theme-light');
-    document.body.classList.add(theme);
-    localStorage.setItem('cwi_theme', theme);
-    themeMenu.classList.remove('open');
-    toast(`Theme changed to ${opt.textContent.trim().split(' ')[1]}`);
-  });
-});
-
-$('shortcutsBtn').addEventListener('click', openShortcuts);
-$('shortcuts-modal').addEventListener('click', e => {
-  if(e.target === $('shortcuts-modal')) closeShortcuts();
-});
-
-document.addEventListener('click', e => {
-  if(!themeMenu.contains(e.target) && e.target !== themeBtn) themeMenu.classList.remove('open');
-});
-
-document.addEventListener('keydown', e => {
-  if(e.key === '?' && !e.ctrlKey && !e.metaKey && document.activeElement !== $('userInput')){
-    openShortcuts();
-    return;
-  }
-  if(!e.ctrlKey && !e.metaKey){
-    if(e.key === '/' && document.activeElement !== $('userInput')){
-      e.preventDefault();
-      $('userInput').focus();
-    }
-    if(e.key === 'Escape'){
-      closeSearch();
-      closeShortcuts();
-      themeMenu.classList.remove('open');
-      if(isMobile()) closeSidebar();
-    }
-    return;
-  }
-  switch(e.key.toLowerCase()){
-    case 'l': e.preventDefault(); clearChat(); break;
-    case 's': e.preventDefault(); exportMD(); break;
-    case 'f': e.preventDefault(); openSearch(); break;
-    case 'b': e.preventDefault(); toggleSidebar(); break;
-    case 'i': e.preventDefault(); $('statsBtn').click(); break;
-  }
-});
-
-window.addEventListener('resize', () => {
-  if(!isMobile()){
-    $('sidebar').classList.remove('open');
-    $('mobileOverlay').classList.remove('open');
-  }else{
-    $('sidebar').classList.remove('collapsed');
-  }
-});
-
-const savedTheme = localStorage.getItem('cwi_theme');
-document.body.classList.add(savedTheme || 'theme-midnight');
-
-const savedOR = localStorage.getItem('cwi_or_key');
-if(savedOR){ apiKey = savedOR; $('apiKey').value = savedOR; }
-const savedHF = localStorage.getItem('cwi_hf_token');
-if(savedHF){ hfToken = savedHF; $('hfToken').value = savedHF; }
-
-renderSavedList();
-updateMonitor();
-fetchFreeModels();
-updateBadge();
-</script>
+<script src="app.js" defer></script>
 </body>
 </html>
