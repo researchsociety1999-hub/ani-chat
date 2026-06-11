@@ -4,6 +4,12 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>ChatWithIt – OpenRouter + Hugging Face Playground</title>
+<meta name="description" content="Dual-provider AI chat playground powered by OpenRouter and Hugging Face. Compare models, switch personas, export conversations." />
+<meta name="theme-color" content="#0a0a0f" />
+<meta property="og:title" content="ChatWithIt" />
+<meta property="og:description" content="Dual-provider AI chat playground — OpenRouter + Hugging Face." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>" />
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -420,7 +426,7 @@ kbd{
 
 .security-warning{
   background:rgba(251,113,133,0.1);border:1px solid var(--rose);border-radius:var(--radius-sm);
-  padding:.5rem .7rem;font-size:.7rem;color:var(--rose);margin-bottom:.5rem;display:none
+  padding:.5rem .7rem;font-size:.7rem;color:var(--rose);margin-bottom:.5rem;
 }
 
 @media (max-width: 980px){
@@ -529,7 +535,7 @@ kbd{
         </select>
       </div>
 
-      <div class="security-warning" id="securityWarning">⚠️ Store tokens securely. Never share them.</div>
+      <div class="security-warning" id="securityWarning">⚠️ API keys are stored in your browser only. Never share them.</div>
 
       <div class="s-section" id="or-auth-section">
         <div class="s-label">OpenRouter Auth</div>
@@ -725,6 +731,6 @@ kbd{
   </div>
 </div>
 
-<script src="app.js" defer></script>
+<script src="js/app.js" defer></script>
 </body>
 </html>
